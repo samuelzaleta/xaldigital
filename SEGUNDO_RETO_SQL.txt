@@ -1,0 +1,51 @@
+PREGUNTA 1.
+RESPUESTA:
+WITH maxAeropuerto as (
+Select ID_AEROPUERTO, MAX(RESULT) From (
+Select ID_AEROPUERTO, COUNT(*) AS RESULT
+From movimientos
+Where Year(DIA) = 2021
+group by ID_AEROPUERTO)
+)
+Select ar.NOMBRE_AEROLINEA
+from maxAeropuerto mx
+inner join aeropuestos ar
+on mx.ID_AEROPUERTO = ar.ID_AEROPUERTO;
+
+PREGUNTA 2.
+RESPUESTA:
+WITH maxAerolinea as (
+Select ID_AEROLINEA, MAX(RESULT) From (
+Select ID_AEROLINEA, COUNT(*) AS RESULT
+From movimientos
+Where Year(DIA) = 2021
+group by ID_AEROLINEA)
+)
+Select ar.NOMBRE_AEROLINEA
+from maxAeropuerto mx
+inner join aerolineas ar
+on mx.ID_AEROLINEA = ar.ID_AEROLINEA;
+
+PREGUNTA 3.
+RESPUESTA:
+with maxdia as (
+select dia, max(result) from (
+select dia, count(*) result
+from movimientos
+group by dia
+)
+)
+select dia from maxdia;
+
+PREGUNTA 4.
+RESPUESTS
+WITH tableindex as (
+SELECT ID_AEROLINEA,Count(ID_AEROLINEA) count_ar, ROWN_NUMBER() OVER(Partition by Dia order by count_ar) Rownumber FROM movimientos
+), tableRow as (
+Select * from tableindex
+where Rownumber = 1 and Rownumber = 2
+)
+Select tb.Rownumber, ar.NOMBRE_AEROLINEA, tb.dia
+From tableindex tb
+inner join aerolineas ar
+on tb.ID_AEROLINEA = ar.ID_AEROLINEA
